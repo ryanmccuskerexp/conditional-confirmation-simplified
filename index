@@ -1,276 +1,186 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; background: #f0f2f5; color: #333; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirmation Logic Builder</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
 
-.modal-overlay {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.4);
-  display: none;
-  align-items: center; justify-content: center;
-}
-.modal-overlay.open {
-  display: flex;
-}
-.modal-container {
-  background: #fff;
-  border-radius: 6px;
-  width: 700px; max-width: 95%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  display: flex; flex-direction: column;
-  overflow: hidden;
-}
-.modal-header, .modal-footer {
-  padding: 1em 1.5em;
-  background: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-  display: flex; align-items: center;
-  justify-content: space-between;
-}
-.modal-footer {
-  border-top: 1px solid #ddd;
-  border-bottom: none;
-  justify-content: flex-end;
-}
-.modal-body {
-  padding: 1.5em;
-  max-height: 60vh;
-  overflow: auto;
-}
-.close-btn {
-  background: none; border: none;
-  font-size: 1.2em; cursor: pointer;
-}
-.add-btn {
-  margin-top: 1em;
-}
+  <div id="modal-overlay" class="modal-overlay open">
+    <div class="modal-container">
 
-/* existing styles */
-.modal { width: 700px; margin: 50px auto; background: #fff; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+      <header class="modal-header">
+        <h2>Form Details Renderer</h2>
+        <button id="close-modal-btn" class="close-btn">✕</button>
+      </header>
 
-.modal-header { padding: 16px; background: #42658e; color: #fff; border-top-left-radius:4px; border-top-right-radius:4px; }
-.modal-header h2 { display: inline-block; margin-right: 32px; font-size: 18px; }
-.tabs button { background: transparent; border: none; color: #ddd; padding: 8px 12px; cursor: pointer; }
-.tabs button.active { color: #fff; border-bottom: 2px solid #fff; }
+      <div class="modal-body">
 
-.modal-body { padding: 16px; }
-.confirmation .switch { display: flex; align-items: center; margin-bottom: 16px; }
-.switch input { display: none; }
-.switch .slider { width: 40px; height: 20px; background: #ccc; border-radius: 10px; position: relative; margin-right: 8px; transition: background .3s; }
-.switch .slider::before { content: ''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top:1px; left:1px; transition: transform .3s; }
-.switch input:checked + .slider { background: #4caf50; }
-.switch input:checked + .slider::before { transform: translateX(20px); }
-.switch .label { font-size: 14px; }
+        <!-- TABS -->
+        <nav class="tabs">
+          <button class="tab"       data-target="details-content">Details</button>
+          <button class="tab"       data-target="form-content">Form</button>
+          <button class="tab"       data-target="design-content">Design</button>
+          <button class="tab active" data-target="confirmation-content">Confirmation</button>
+          <button class="tab"       data-target="hidden-content">Additional Hidden Fields</button>
+        </nav>
 
-#conditions-container { margin-bottom: 12px; }
-.condition-row { display: flex; align-items: center; margin-bottom: 8px; }
-.condition-row select,
-.condition-row input { margin-right: 8px; padding: 6px; font-size: 14px; }
-.condition-row .remove-condition { background: transparent; border: none; cursor: pointer; font-size: 16px; }
+        <!-- DETAILS PANEL -->
+        <div id="details-content" class="tab-content" style="display:none;">
+          <!-- … -->
+        </div>
 
-#add-condition { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+        <!-- FORM PANEL -->
+        <div id="form-content" class="tab-content" style="display:none;">
+          <div class="field-group">
+            <p>Are you a current Experian Customer?*</p>
+            <label><input type="radio" name="experianCustomer" value="yes"> Yes</label>
+            <label><input type="radio" name="experianCustomer" value="no"> No</label>
+          </div>
+          <div class="field-group">
+            <p>How many employees does your company have?*</p>
+            <label><input type="radio" name="employeesCount" value="≤100"> 100 employees or less</label>
+            <label><input type="radio" name="employeesCount" value=">100"> 100 employees or more</label>
+          </div>
+          <div class="field-group">
+            <p>Do you have permissible purpose?*</p>
+            <label><input type="radio" name="permissiblePurpose" value="yes"> Yes</label>
+            <label><input type="radio" name="permissiblePurpose" value="no"> No</label>
+          </div>
+          <div class="field-group">
+            <label>Country *</label>
+            <select name="country">
+              <option>United States</option>
+              <option>Canada</option>
+              <option>United Kingdom</option>
+              <option>Australia</option>
+              <option>Germany</option>
+              <option>France</option>
+              <option>India</option>
+              <option>Brazil</option>
+              <option>Japan</option>
+              <option>Mexico</option>
+              <!-- add more here if you like -->
+            </select>
+          </div>
+          <div class="field-group"><label>Email *</label><input type="email"></div>
+          <div class="field-group"><label>First Name *</label><input type="text"></div>
+          <div class="field-group"><label>Last Name *</label><input type="text"></div>
+          <div class="field-group"><label>Company *</label><input type="text"></div>
+          <div class="field-group"><label>Phone *</label><input type="tel"></div>
+        </div>
 
-.modal-footer { padding: 12px 16px; text-align: right; background: #f7f7f7; border-bottom-left-radius:4px; border-bottom-right-radius:4px; }
-.modal-footer button { margin-left: 8px; padding: 6px 12px; font-size: 14px; cursor: pointer; }
+        <!-- DESIGN PANEL -->
+        <div id="design-content" class="tab-content" style="display:none;">
+          <!-- … -->
+        </div>
 
-/* Tabs */
-.tabs {
-  display: flex;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 1em;
-}
-.tab {
-  background: none;
-  border: none;
-  padding: .5em 1em;
-  cursor: pointer;
-  color: #444;
-  font-size: .95em;
-  transition: color .2s;
-}
-.tab:hover {
-  color: #333;
-  text-decoration: underline;
-}
-.tab.active {
-  color: #222;
-  border-bottom: 2px solid #1976d2;
-  font-weight: bold;
-}
+        <!-- CONFIRMATION PANEL -->
+        <div id="confirmation-content" class="tab-content" style="display:block;">
+          <!-- CONFIRMATION TARGET -->
+          <div class="field-group">
+            <label for="confirmation-target">Confirmation target *</label>
+            <select id="confirmation-target">
+              <option value="redirect">Redirect</option>
+              <option value="modal">Modal</option>
+              <option value="download">Download</option>
+            </select>
+          </div>
 
-/* Darken all tab text */
-.tabs .tab {
-  color: #333;   /* dark grey */
-}
+          <!-- DEFAULT PAGE (dynamic) -->
+          <div class="field-group" id="default-page-group">
+            <label for="default-input" id="default-label">Choose default confirmation page *</label>
+            <input type="text" id="default-input" placeholder="https://">
+          </div>
 
-/* Ensure active tab is also dark */
-.tabs .tab.active {
-  color: #333;   /* dark grey */
-}
+          <!-- CONDITIONAL LOGIC TOGGLE -->
+          <label class="switch">
+            <input type="checkbox" id="toggle-conditional">
+            <span class="slider"></span>
+            <span class="label">Conditional Logic</span>
+          </label>
 
-/* ensure your panels stack correctly */
-.tab-content {
-  display: none;
-}
-#confirmation-content { display: block; }
+          <!-- CONDITIONAL BUILDER (hidden until toggle) -->
+          <div id="conditional-builder">
+            <div class="rule-block">
+              <div class="info-note">
+                <strong>Note:</strong> Enter the exact HTML field name and value to match. Multiple conditions can be combined with AND/OR logic.
+              </div>
+              
+              <div class="section">
+                <h3>If…</h3>
+                <div id="conditions-container"></div>
+                <button id="add-condition-btn" class="add-btn">+ Add Condition</button>
+              </div>
+              
+              <div class="section">
+                <h3>Then redirect to…</h3>
+                <div id="alternate-confirmation-group" class="field-group">
+                  <label for="alternate-confirmation-url">Alternate confirmation URL *</label>
+                  <input type="text" id="alternate-confirmation-url" placeholder="https://">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-/* Field groups */
-.field-group {
-  margin-bottom: 1em;
-}
-.field-group label {
-  display: block;
-  margin-bottom: .25em;
-  font-size: .9em;
-  color: #333;
-}
-.field-group select,
-.field-group input[type="text"] {
-  width: 100%;
-  padding: .5em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+        <!-- ADDITIONAL HIDDEN FIELDS PANEL -->
+        <div id="hidden-content" class="tab-content" style="display:none;">
+          <!-- … -->
+        </div>
 
-/* Fix the switch so it doesn’t overlap its label */
-.switch {
-  display: inline-flex;
-  align-items: center;
-  margin: 1em 0;
-}
-.switch .slider {
-  margin-right: .5em;
-}
-.switch .label {
-  margin-left: .25em;
-}
+      </div>
 
-/* Hide the builder until toggled */
-#conditional-builder {
-  margin-top: 1em;
-}
+      <footer class="modal-footer">
+        <button id="cancel-btn">Cancel</button>
+        <button id="save-btn">Save</button>
+      </footer>
 
-/* Rule block wrapper - single rule set styling */
-.rule-block {
-  position: relative;
-  background: #f9f9f9;
-  border: 1px solid #d6d6d6;
-  border-radius: 8px;
-  padding: 1.5em;
-  margin-top: 1em;
-}
+    </div>
+  </div>
 
-/* Info note styling */
-.info-note {
-  background: #e3f2fd;
-  border-left: 4px solid #1976d2;
-  padding: 0.75em;
-  margin-bottom: 1.25em;
-  font-size: 0.9em;
-  color: #333;
-  border-radius: 4px;
-}
+  <!-- quick diagnostics to confirm script load/parse -->
+  <script>
+    console.log('[page] inline BEFORE app.js');
+    // show whether console is filtered
+    console.log('[page] console levels test: debug/info/warn/error');
+    console.debug('[page-debug] debug message');
+  </script>
 
-.info-note strong {
-  color: #1976d2;
-}
+  <!-- load app.js with onload/onerror hooks so we know if it loaded or failed -->
+  <script src="js/app.js"
+          onload="console.log('[page] app.js loaded successfully')"
+          onerror="console.error('[page] app.js failed to load (network or parse error)')"></script>
 
-/* Section styling */
-.section {
-  margin-bottom: 1.5em;
-}
-
-.section h3 {
-  margin: 0 0 0.75em;
-  font-size: 1em;
-  font-weight: bold;
-  color: #444;
-}
-
-/* Conditions container */
-#conditions-container {
-  margin-bottom: 1em;
-}
-
-/* Condition row styling - manual text inputs */
-.condition-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75em;
-  background: #fff;
-  border: 1px solid #d6d6d6;
-  border-radius: 6px;
-  padding: 0.75em 1em;
-  margin-bottom: 0.75em;
-  flex-wrap: nowrap;
-}
-
-.condition-row .operator-select {
-  min-width: 70px;
-  max-width: 80px;
-  padding: 0.5em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9em;
-}
-
-.condition-row .field-name-input,
-.condition-row .field-value-input {
-  flex: 1 1 180px;
-  min-width: 140px;
-  padding: 0.5em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9em;
-}
-
-.condition-row .equals-label {
-  font-weight: bold;
-  color: #666;
-  font-size: 1em;
-  padding: 0 0.25em;
-}
-
-.condition-row .remove-btn {
-  background: #fff;
-  border: 1px solid #bbb;
-  border-radius: 4px;
-  padding: 0.3em 0.7em;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
-  min-width: 32px;
-}
-
-.condition-row .remove-btn:hover {
-  background: #ffeaea;
-  border-color: #d32f2f;
-  color: #c00;
-}
-
-/* Add condition button */
-#add-condition-btn {
-  background: #fff;
-  border: 1px solid #bbb;
-  border-radius: 4px;
-  padding: 0.5em 1em;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: background 0.2s, border-color 0.2s;
-  margin-top: 0.5em;
-}
-
-#add-condition-btn:hover {
-  background: #e6f0ff;
-  border-color: #1976d2;
-}
-
-/* Alternate confirmation group */
-#alternate-confirmation-group {
-  margin-top: 1em;
-}
-
-#alternate-confirmation-group input {
-  width: 100%;
-  padding: 0.5em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('[page] DOMContentLoaded fired (inline script)');
+      // Tab switching logic (unchanged)...
+      document.querySelectorAll('.tabs .tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          console.log('[page] tab click:', tab.getAttribute('data-target'));
+          // Remove active from all tabs
+          document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          // Hide all tab panels
+          document.querySelectorAll('.tab-content').forEach(panel => panel.style.display = 'none');
+          // Show the selected panel
+          const target = tab.getAttribute('data-target');
+          document.getElementById(target).style.display = 'block';
+          // If switching to Confirmation tab, ensure builder is properly initialized
+          if (target === 'confirmation-content') {
+            var toggle = document.getElementById('toggle-conditional');
+            var builder = document.getElementById('conditional-builder');
+            var conditionsContainer = document.getElementById('conditions-container');
+            if (toggle && builder) {
+              // Builder visibility is controlled by toggle state
+              // Initial condition will be added by app.js if needed
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
